@@ -1,27 +1,22 @@
-name: CI Pipeline
+name: CI/CD Pipeline
 
 on:
   push:
-    branches: [ "main" ]
+    branches: ["main"]
 
 jobs:
-  build:
+  build-and-push:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v3
+      - name: Checkout
+        uses: actions/checkout@v4
 
-    - name: Set up Python
-      uses: actions/setup-python@v4
-      with:
-        python-version: "3.10"
+      - name: Build Image
+        run: docker build -t ${{ secrets.DOCKER_USERNAME }}/devops-app .
 
-    - name: Install dependencies
-      run: pip install -r requirements.txt
+      - name: Login Docker Hub
+        run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
 
-    - name: Run app test
-      run: python app.py & sleep 5
-
-    - name: Build Docker image
-      run: docker build -t myapp .
+      - name: Push Image
+        run: docker push ${{ secrets.DOCKER_USERNAME }}/devops-app
