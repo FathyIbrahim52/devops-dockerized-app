@@ -9,14 +9,14 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout
+      - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Build Image
-        run: docker build -t fathyibrahim /devops-app .
+      - name: Build Docker image
+        run: docker build -t fathyibrahim/devops-app .
 
-      - name: Login Docker Hub
+      - name: Login to Docker Hub
         run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "fathyibrahim" --password-stdin
 
-      - name: Push Image
+      - name: Push Docker image
         run: docker push fathyibrahim/devops-app
